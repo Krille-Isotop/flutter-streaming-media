@@ -49,6 +49,6 @@ class BottomNavigation extends StatelessWidget {
   }
 
   Color _colorTabMatching({TabItem item}) {
-    return currentTab == item ? Colors.orange : Colors.grey;
+    return currentTab == item ? Colors.black87 : Colors.grey;
   }
 }

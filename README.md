@@ -21,9 +21,9 @@ __screens/__<br>Denna mapp hanterar alla sidor som vi ska kunna hantera i navige
 Vi kan börja med att titta på navigationsbaren.
 
 Högst upp i filen har vi våra TabItems, alltså de små ikonerna i botten navigationen.
-Jag valde att hålla denna enum i ``bottom_navigation.dart`` för att de hör till botten navigationen.
+Här har vi denna enum i ``bottom_navigation.dart`` för att den hör till botten navigationen.
 
-Här har vi två TabItems, "red" och "blue" som kommer vara de två valen användaren har i bottom navigationen.
+Här har vi två TabItems, "red" och "blue" som kommer vara de två valen användaren har i botten navigationen.
 Vi ger varje TabItem ett namn och en ikon.
 
 ```
@@ -40,7 +40,7 @@ Map<TabItem, IconData> tabIcon = {
 };
 ```
 
-Först kan vi titta på BottomNavigation i sin helhet:
+Då kan vi först titta på BottomNavigation i sin helhet:
 
 ```
 class BottomNavigation extends StatelessWidget {
@@ -84,14 +84,13 @@ class BottomNavigation extends StatelessWidget {
 }
 ```
 
-Denna class bygger en Bottom Navigation Bar till oss och kommer behöva veta vilket som är den aktiva tab:en, samt vad som händer när användaren klickar på en tab. Därför ber vi om dom i construktorn:
+Denna class kommer att bygga navigationsbaren och kommer behöva veta vilket som är den aktiva tab:en, samt vad som händer när användaren klickar på en tab. Därför ber vi om det i konstruktorn:
 ```
 final TabItem currentTab;
   final ValueChanged<TabItem> onSelectTab;
 ```
 
-Sedan så ser vi att den här classen returnerar som förväntat en ``BottomNavigationBar`` och vi ser till att funktionen vi tagit emot i construktorn kommer köras i samband med att användaren klickar på en tab.
-Alla TabItems som ska visas ska placeras i ``items: [...]`` och här har vi en liten hjälpfunktion för att bygga upp dom baserat på enumen vi skapade tidigare.
+Sedan så ser vi att den här classen returnerar som förväntat en `BottomNavigationBar` och vi ser till att funktionen vi tagit emot i konstruktorn kommer köras i samband med att användaren klickar på en tab.<br>Alla TabItems som ska visas ska placeras i `items: [...]` och här har vi en liten hjälpfunktion för att bygga upp dom baserat på enumen vi skapade tidigare.
 
 ```
 return BottomNavigationBar(
@@ -106,8 +105,7 @@ return BottomNavigationBar(
     );
 ```
 
-Här returnerar vi ett ``BottomNavigationItem`` och tar informationen från det TabItem som vi gett som argument.
-Vi har även en liten ``_setActiveColor`` funktion som sätter antingen en aktiv eller inaktiv färg till TabItem:et.
+Hjälpfunktionen `_buildItem` returnerar ett ``BottomNavigationItem`` och tar informationen från det TabItem som vi gett som argument.<br>Vi har även en liten ``_setActiveColor`` funktion som sätter antingen en aktiv eller inaktiv färg till TabItem:et.
 
 ```
   BottomNavigationBarItem _buildItem({TabItem tabItem}) {
@@ -171,17 +169,18 @@ class RouteGenerator {
 }
 ```
 
-Högst upp ser vi fyra konstanter som ska representera de routes vår app kan visa. Vi kommer senare att behöva dessa strängar vid navigering
+Högst upp ser vi fyra konstanter som ska representera de routes vår app kan visa. Vi kommer senare att behöva dessa strängar vid navigering.
 
 Sedan har vi ``generateRoute(RouteSettings settings)`` funktionen. Den tar emot ``RouteSettings`` som kommer innehålla all information vi kommer behöva sköta navigeringen.<br>
 Här ser vi att vi kan komma åt vilken route som vi ska ta genom ``settings.name`` och kan sen bygga upp en Widget efter det.
+
 Eftersom det är en switch så måste ett default case läggas in och vi har skapat en liten ``_errorRoute`` som ska byggas om något går fel.
 
 #### main.dart
 
 Nu när vi har både vår `RouteGenerator` och `BottomNavigation` så kan vi sätta ihop det med vår `Router`.
 Men Vi kan börja med att titta i appens ``main.dart`` fil.<br>
-Detta är roten till en Flutter app och vi ger appen en titel och den Widget som ska laddas in först, i vårat fall vår Router Widget.
+Detta är roten till en Flutter app och vi ger appen en titel och den Widget som ska laddas in först, i vårat fall vår `Router` Widget.
 
 ```
 class MyApp extends StatelessWidget {
@@ -198,7 +197,7 @@ class MyApp extends StatelessWidget {
 #### Router
 
 Så då kan vi se vad som händer i Router Widgeten i ``router.dart``
-``Router`` är en StatefulWidget med ett state. Den kommer behöva hålla reda på vilken navigations-tab som är aktiv just nu.
+``Router`` är en StatefulWidget med ett state. Den kommer behöva hålla reda på vilken navigationstab som är aktiv just nu.
 
 Först kan vi titta på den i sin helhet:
 
@@ -254,13 +253,13 @@ class _RouterState extends State<Router> {
 
 ```
 
-Vår Routers state är vilken som är den aktiva tab:en. Vi kan initsialt sätta den till den röda routen.
+Vår Routers state är vilken som är den aktiva tab:en. Vi kan initialt sätta den till den röda routen.
 
 ```
 TabItem currentTab = TabItem.red;
 ```
 
-Efter det så kommer vi behöva två nycklar. Beskrivning kommer...
+Efter det så kommer vi behöva två nycklar. Dessa kommer att behövas för att hålla reda på hur state ser ut för navigationen.
 
 ```
 Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
@@ -284,10 +283,9 @@ Vår Router returnerar ett `WillPopScope`. Denna Widget har vi för att hantera 
 Utan denna så kommer klicket på knappen resultera i att appen göms och sätts i bakgrundsläge men vi vill fånga det eventet och istället navigera tillbaka till den förra skärmen i navigeringen.
 
 `WillPopScope` ger oss tillgång till en `onWillPop` property. Om denna callback resulterar i false så kommer appen inte sättas i bakgrundsläge.
-Beskrivning kommer om Callback...
 
 `WillPopScope` lägger sig runt den `Scaffold` som användaren alltid kommer se. Vi kommer alltid vilja att användaren har tillgång till vår BottomNavigation, så vi passar in den med argumenten den frågar efter.
-I `body` så vill vi ha de Navigationsvägar som användaren kan ta. I vårt fall har vi två, "röd" och "blå" och vi kan använda oss av vår hjälpfunktion `_buildOffstageNavigator()` för att skapa upp egna Navigationscontext till dom.
+I `body` så vill vi ha de Navigationsvägar som användaren kan ta. I vårt fall har vi två, röd och blå, och vi kan använda oss av vår hjälpfunktion `_buildOffstageNavigator()` för att skapa upp egna Navigationscontext till dessa.
 
 ```
 @override
@@ -311,12 +309,14 @@ I `body` så vill vi ha de Navigationsvägar som användaren kan ta. I vårt fal
 ```
 
 Då kan vi titta på vad `_buildOffstageNavigator()` gör.
-Vi kan se att den kommer ge tillbaka en Widget, men den returnerar en `Offstage` Widget.<br>
+
+Vi kan se att den returnerar en `Offstage` Widget.<br>
 Denna Widget används för att behålla sin child i minnet, men vi kan gömma den så vi inte ser den om vi vill.
 Vi bör gömma den om den aktiva tab:en inte är den som användaren valt: `offstage: currentTab != tabItem`.
 
-Sen kan vi sätta upp en `Navigator` för den här routen.
+Sen kan vi sätta upp en `Navigator` för den här routen.<br>
 Vi ger Navigatorn en `key` för att spara navigations-state när vi växlar tabs och vi säger vilken route som den ska börja på.
+
 Och nu får vi användning av vår RouteGenerator för här kan vi säga till Navigatorn att när vi vill navigera så kan du använda dig av de routes vi switchar på i `RouteGenerator.generateRoute`.
 
 ```
@@ -335,10 +335,13 @@ Widget _buildOffstageNavigator(TabItem tabItem, {String initalRoute}) {
 ## Dags att se hur det fungerar
 
 Vi startar upp appen med `flutter run` och ser att vi har en röd sida aktiv och kan ta oss till den blå sidan via botten navigationen.
+
 Då ska vi se om vi kan navigera inuti de båda sidorna.
-Varje sida har en knapp i mitten som sköter navigeringen. Vi kikar på knappen i den röda sidan, `red_screen.dart`.
-Vi har här en `RaisedButton` som kommer sköta navigationen i sin `onPressed` callback.
+
+Varje sida har en knapp i mitten som sköter navigeringen. Vi kikar på knappen i den röda sidan, `red_screen.dart`.<br>
+Vi har här en `RaisedButton` som kommer sköta navigationen i sin `onPressed` callback.<br>
 `Navigator.of(context)` kommer titta på det närmaste Navigationscontextet för den här Widgeten och det är det Navigationscontextet vi skapade för den röda routen.
+
 På den kan vi använda `pushNamed` som förväntar sig en sträng att matcha en route till, och det satte vi upp som statiska konstanter högst upp i `RouteGenerator`.
 
 ```
@@ -348,5 +351,6 @@ RaisedButton(
     child: { ... }
   ),
 ```
-Nu så tar ett klick på knappen oss till `light_red_screen.dart` och `LightRed` Widgeten. Vi testar att klicka på den blå ikonen i botten navigationen och vi möts enligt förväntat av en blå sida.
+Nu så tar ett klick på knappen oss till `light_red_screen.dart` och `LightRed` Widgeten.<br>Vi testar att klicka på den blå ikonen i botten navigationen och vi möts enligt förväntat av en blå sida.
+
 När vi sen väljer den röda sidan igen, så ser vi fortfarande `LightRed` Widgeten.

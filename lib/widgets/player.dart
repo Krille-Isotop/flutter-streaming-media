@@ -3,8 +3,10 @@ import 'package:video_player/video_player.dart';
 
 class Player extends StatefulWidget {
   final String url;
+  final bool showVideo;
+  final String imageUrl;
 
-  Player(this.url);
+  Player(this.url, {this.showVideo = true, this.imageUrl});
 
   @override
   _PlayerState createState() => _PlayerState();
@@ -29,10 +31,12 @@ class _PlayerState extends State<Player> {
       children: [
         Center(
           child: _controller.value.initialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
+              ? widget.showVideo
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                  : Container(child: Image.network(widget.imageUrl))
               : Container(),
         ),
         IconButton(

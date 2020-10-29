@@ -1,41 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_navigation_guide/navigation/route_generator.dart';
+import 'package:flutter_navigation_guide/dto/episode.dart';
+import 'package:flutter_navigation_guide/network_service.dart';
+import 'package:flutter_navigation_guide/widgets/player.dart';
 
 class RedScreen extends StatelessWidget {
+  final NetworkService networkService = NetworkService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('RedScreen')
-      ),
-      body: Container(
-        width: double.infinity,
-        color: Colors.red[700],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-            'Red Screen',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 40.0
-            ),
-            ),
-            SizedBox(height: 20),
-            RaisedButton(
-              onPressed: () => Navigator.of(context).pushNamed(RouteGenerator.lightRed),
-              color: Colors.red[900],
-              child: Text(
-                'Go to Light Red Screen',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0
-                ),
-              ),
-            ),
-          ], 
-        )
-      )
-    );
+        appBar: AppBar(title: Text('Red Screen')),
+        body: Container(
+          child: FutureBuilder<EpisodeList>(
+            future: networkService.getEpisodes(),
+            builder: (BuildContext context, snapshot) {
+              if (!snapshot.hasError && snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data.episodes.length,
+                    itemBuilder: (context, index) {
+                      final episode = snapshot.data.episodes[index];
+                      return Player(episode.url.replaceFirst("http", "https"),
+                          showVideo: false, imageUrl: episode.imageUrl);
+                    });
+              }
+
+              return SizedBox.shrink();
+            },
+          ),
+        ));
   }
 }
